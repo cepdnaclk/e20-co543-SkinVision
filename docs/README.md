@@ -3,8 +3,8 @@ layout: home
 permalink: index.html
 
 # Please update this with your repository name and title
-repository-name: eYY-XXX-project-template
-title:
+repository-name: e20-co543-SkinVision
+title: SkinVision: Skin Tone, Texture and Health Analyzer
 ---
 
 [comment]: # "This is the standard layout for the project, but you can clean this and use your own template"
@@ -20,9 +20,10 @@ This is a sample image, to show how to add images to your page. To learn more op
  -->
 
 ## Team
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
--  eNumber, Name, [email](mailto:name@email.com)
+- E/20/197,  A.H.D. Kawya,           [email](e20197@eng.pdn.ac.lk) <br>
+- E/20/211,  K.W.I.T. Kumarasinghe,  [email](e20211@eng.pdn.ac.lk) <br>
+- E/20/212,  R.M.S.H. Kumarasinghe,  [email](e20212@eng.pdn.ac.lk) <br>
+- E/20/242,  G.A.I. Malinga,         [email](e20242@eng.pdn.ac.lk) <br>
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -33,7 +34,13 @@ This is a sample image, to show how to add images to your page. To learn more op
 
 ## Introduction
 
- description of the real world problem and solution, impact
+"SkinVision: Skin Tone, Texture and Health Analyzer" aims to develop an advanced system that leverages image processing and artificial intelligence to analyze skin images.<br> The system focuses on three key aspects:
+<ul>
+  <li>Accurately determining skin tone</li>
+  <li>Assessing texture (smoothness or roughness)
+  <li>Evaluating healthiness metrics like redness, blemishes, and wrinkles</li>
+</ul><br>
+By automating these tasks, the project addresses the limitations of subjective and manual skin evaluations, offering a reliable, real-time, and accessible solution for dermatology, cosmetics, and personal skin health monitoring.
 
 ## Other Sub Topics
 
