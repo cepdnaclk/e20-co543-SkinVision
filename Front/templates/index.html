@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Tone Classifier</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://wallpapercave.com/wp/wp3458036.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            /* display: flex; */
+            justify-content: center;
+            /* align-items: center; */
+        }
+        h1 {
+            color: #7a2626;
+            margin: 20px;
+            font-size: 70px;
+        }
+        label {
+            font-weight: bold;
+            color: #7a2626;
+            font-size: 20px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 5px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #7a262698;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #49171798;
+        }
+        #result {
+            font-size: 24px;
+            color: #882b2b;
+            margin-top: 20px;
+            text-shadow: 
+            -1px -1px 0 #ddd,  
+            1px -1px 0 #ddd,
+            -1px  1px 0 #ddd,
+            1px  1px 0 #ddd;
+        }
+        img {
+            border: 2px solid #491717;
+            border-radius: 10px;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        .file-box {
+            border: 2px dashed #4caf4f00;
+            padding: 10px;
+            display: none;
+            border-radius: 10px;
+        }
+        .file-box img {
+            max-width: 200px;
+            max-height:250px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        #file-name {
+            font-size: 1.2rem;
+            color: #33333300;
+        }
+    </style>
+</head>
+<body>
+
+    <section>
+        <center><h1>SkinVison</h1></center>
+    </section>
+    <br><br>
+    <section>
+        <form id="upload-form" enctype="multipart/form-data">
+            <center><table>
+                <tr>
+                    <td>
+                        <label for="file-input" class="custom-file-upload">Choose an image</label><br>
+                    </td>
+                    <td>
+                        <input type="file" id="file-input" name="file" accept="image/*" required>
+                    </td>
+                </tr>
+                
+            </table></center>
+            <center><button type="submit">Predict</button></center>
+        </form>
+    </section>
+
+    <section>
+
+        <!-- Display file box -->
+        <div class="file-box" id="file-box">
+            <p id="file-name"></p>
+            <center><img id="preview" alt="Chosen Image"></center>
+        </div>
+
+        <center><h2 id="result"></h2></center>
+    </section>
+
+    <!-- Video stream from camera -->
+    <!-- <video id="camera" autoplay></video>
+
+    <button id="capture-btn">Capture Photo</button>
+
+    <canvas id="canvas" style="display: none;"></canvas>
+
+    <img id="captured-image" style="max-width: 300px; display: none;" alt="Captured Image"> -->
+
+    
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('file-input');
+            if (!fileInput.files.length) {
+                document.getElementById('result').textContent = 'Please select a file first!';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    document.getElementById('result').textContent = 'Error: ' + error.error;
+                    return;
+                }
+
+                const result = await response.json();
+                document.getElementById('result').textContent = 
+                    'Predicted Class:  ' + result.predicted_class + 
+                    '  (Confidence: ' + result.confidence.toFixed(2) + ')';
+            } catch (error) {
+                document.getElementById('result').textContent = 'Failed to predict: ' + error.message;
+            }
+        });
+
+        const fileInput = document.getElementById('file-input');
+        const fileBox = document.getElementById('file-box');
+        const fileNameDisplay = document.getElementById('file-name');
+        const preview = document.getElementById('preview');
+        const form = document.getElementById('upload-form');
+
+        // Show file name and preview image
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `File: ${file.name}`;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    fileBox.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Submit form and show file box
+        form.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent actual submission
+
+            if (!fileInput.files.length) {
+                fileNameDisplay.textContent = 'Please select a file first!';
+                fileBox.style.display = 'block';
+                return;
+            }
+            
+            // Simulate showing chosen file after clicking predict
+            fileBox.style.display = 'block';
+        });
+        // const video = document.getElementById('camera');
+        // const canvas = document.getElementById('canvas');
+        // const captureBtn = document.getElementById('capture-btn');
+        // const result = document.getElementById('result');
+        // const capturedImage = document.getElementById('captured-image');
+
+        // Access the user's camera
+        // navigator.mediaDevices.getUserMedia({ video: true })
+        //     .then(stream => {
+        //         video.srcObject = stream;
+        //     })
+        //     .catch(error => {
+        //         console.error('Error accessing camera:', error);
+        //     });
+
+        // Capture the image and send to Flask
+        // captureBtn.addEventListener('click', async () => {
+        //     const context = canvas.getContext('2d');
+        //     canvas.width = video.videoWidth;
+        //     canvas.height = video.videoHeight;
+        //     context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        //     // Show the captured image
+        //     const imageDataURL = canvas.toDataURL('image/jpg');
+        //     capturedImage.src = imageDataURL;
+        //     capturedImage.style.display = 'block';
+
+        //     // Convert the image to a blob
+        //     canvas.toBlob(async (blob) => {
+
+        //         // Convert the blob to a File object
+        //         const file = new File([blob], 'captured_image.jpg', { type: 'image/jpg' });
+
+        //         const formData = new FormData();
+        //         formData.append('file', fileInput.files[0]);
+
+        //         try {
+        //             const response = await fetch('http://127.0.0.1:5000/predict', {
+        //                 method: 'POST',
+        //                 body: formData
+        //             });
+
+        //             if (!response.ok) {
+        //                 const error = await response.json();
+        //                 document.getElementById('result').textContent = 'Error: ' + error.error;
+        //                 return;
+        //             }
+
+        //             const result = await response.json();
+        //             document.getElementById('result').textContent = 
+        //                 'Predicted Class: ' + result.predicted_class + 
+        //                 ' (Confidence: ' + result.confidence.toFixed(2) + ')';
+        //         } catch (error) {
+        //             document.getElementById('result').textContent = 'Failed to predict: ' + error.message;
+        //         }
+        //     });
+        // });
+    </script>
+</body>
+</html>
